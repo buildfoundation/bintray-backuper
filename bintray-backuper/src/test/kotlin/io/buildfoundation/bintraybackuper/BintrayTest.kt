@@ -55,7 +55,7 @@ class BintrayTest {
                 ]
             """))
 
-        getRepos(httpClient, jsonParser, "testorg", testServer.url(""))
+        getRepos(httpClient, jsonParser, testServer.url(""), "testorg")
             .test()
             .awaitDone(5, SECONDS)
             .assertNoErrors()
@@ -87,7 +87,7 @@ class BintrayTest {
                 ]
             """))
 
-        getPackages(httpClient, jsonParser, "testorg", BintrayRepo("testrepo"), 0, testServer.url(""))
+        getPackages(httpClient, jsonParser, testServer.url(""), "testorg", BintrayRepo("testrepo"), 0)
             .test()
             .awaitDone(5, SECONDS)
             .assertNoErrors()
@@ -167,7 +167,7 @@ class BintrayTest {
                 ]
             """))
 
-        getPackages(httpClient, jsonParser, "testorg", BintrayRepo("testrepo"), 0, testServer.url(""))
+        getPackages(httpClient, jsonParser, testServer.url(""), "testorg", BintrayRepo("testrepo"), 0)
             .test()
             .awaitDone(5, SECONDS)
             .assertNoErrors()
@@ -245,7 +245,7 @@ class BintrayTest {
             """)
         )
 
-        getPackageFiles(httpClient, jsonParser, "testorg", BintrayRepo("testrepo"), BintrayPackage("testpackage"), testServer.url(""))
+        getPackageFiles(httpClient, jsonParser, testServer.url(""), "testorg", BintrayRepo("testrepo"), BintrayPackage("testpackage"))
             .test()
             .awaitDone(5, SECONDS)
             .assertNoErrors()
@@ -274,7 +274,7 @@ class BintrayTest {
 
         val testFile = testDir.newFile()
 
-        downloadFile(httpClient, "testorg", BintrayRepo("testrepo"), BintrayFile("org/jfrog/powerutils/nutcracker/1.1/nutcracker-1.1-sources.jar", "602e20176706d3cc7535f01ffdbe91b270ae5012"), testFile, 16 * 1024, testServer.url(""))
+        downloadFile(httpClient, testServer.url(""), "testorg", BintrayRepo("testrepo"), BintrayFile("org/jfrog/powerutils/nutcracker/1.1/nutcracker-1.1-sources.jar", "602e20176706d3cc7535f01ffdbe91b270ae5012"), testFile, 16 * 1024)
             .test()
             .awaitDone(5, SECONDS)
             .assertNoErrors()

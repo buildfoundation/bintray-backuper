@@ -41,16 +41,16 @@ fun main(rawArgs: Array<String>) {
     val discoveredFiles = Collections.newSetFromMap(ConcurrentHashMap<BintrayFile, Boolean>())
     val resolvedFiles = Collections.newSetFromMap(ConcurrentHashMap<BintrayFile, Boolean>())
 
-    val results = getRepos(httpClient, jsonParser, args.subject)
+    val results = getRepos(httpClient, jsonParser, args.apiEndpoint, args.subject)
         .doOnNext { repo -> println("Discovered repo: '${args.subject}/${repo.name}'") }
         .flatMap { repo ->
-            getPackages(httpClient, jsonParser, args.subject, repo, startPosition = 0)
+            getPackages(httpClient, jsonParser, args.apiEndpoint, args.subject, repo, startPosition = 0)
                 .subscribeOn(downloadScheduler)
                 .map { pkg -> repo to pkg }
         }
         .doOnNext { (repo, pkg) -> println("Discovered package: '${args.subject}/${repo.name}/${pkg.name}'") }
         .flatMap { (repo, pkg) ->
-            getPackageFiles(httpClient, jsonParser, args.subject, repo, pkg)
+            getPackageFiles(httpClient, jsonParser, args.apiEndpoint, args.subject, repo, pkg)
                 .subscribeOn(downloadScheduler)
                 .map { file -> Triple(repo, pkg, file) }
         }
@@ -62,7 +62,7 @@ fun main(rawArgs: Array<String>) {
             Single
                 .fromCallable { File(args.downloadDir, "${args.subject}/${repo.name}/${pkg.name}/${file.path}") }
                 .flatMap { destinationFile ->
-                    val downloadAndVerifyChecksum = downloadFile(httpClient, args.subject, repo, file, destinationFile, args.networkBufferBytes)
+                    val downloadAndVerifyChecksum = downloadFile(httpClient, args.downloadsEndpoint, args.subject, repo, file, destinationFile, args.networkBufferBytes)
                         .subscribeOn(downloadScheduler)
                         .observeOn(checksumScheduler)
                         .andThen(verifySha1Checksum(destinationFile, args.checksumBufferBytes, file.sha1))

@@ -36,7 +36,7 @@ data class BintrayFile(
 /**
  * [API Documentation](https://bintray.com/docs/api/#_get_repositories)
  */
-fun getRepos(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, apiEndpoint: HttpUrl = HttpUrl.get("https://api.bintray.com/")): Observable<BintrayRepo> = Single
+fun getRepos(httpClient: OkHttpClient, jsonParser: Moshi, apiEndpoint: HttpUrl, subject: String): Observable<BintrayRepo> = Single
     .fromCallable {
         httpClient
             .newCall(
@@ -66,7 +66,7 @@ fun getRepos(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, apiEn
 /**
  * [API Documentation](https://bintray.com/docs/api/#_get_packages)
  */
-fun getPackages(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, repo: BintrayRepo, startPosition: Int, apiEndpoint: HttpUrl = HttpUrl.get("https://api.bintray.com/")): Observable<BintrayPackage> = Single
+fun getPackages(httpClient: OkHttpClient, jsonParser: Moshi, apiEndpoint: HttpUrl, subject: String, repo: BintrayRepo, startPosition: Int): Observable<BintrayPackage> = Single
     .fromCallable {
         httpClient
             .newCall(
@@ -98,7 +98,7 @@ fun getPackages(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, re
         } else {
             Observable
                 .fromIterable(packages)
-                .concatWith(getPackages(httpClient, jsonParser, subject, repo, end, apiEndpoint))
+                .concatWith(getPackages(httpClient, jsonParser, apiEndpoint, subject, repo, end))
         }
     }
     .distinct()
@@ -106,7 +106,7 @@ fun getPackages(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, re
 /**
  * [API Documentation](https://bintray.com/docs/api/#_get_package_files)
  */
-fun getPackageFiles(httpClient: OkHttpClient, jsonParser: Moshi, subject: String, repo: BintrayRepo, pkg: BintrayPackage, apiEndpoint: HttpUrl = HttpUrl.get("https://api.bintray.com/")): Observable<BintrayFile> = Single
+fun getPackageFiles(httpClient: OkHttpClient, jsonParser: Moshi, apiEndpoint: HttpUrl, subject: String, repo: BintrayRepo, pkg: BintrayPackage): Observable<BintrayFile> = Single
     .fromCallable {
         httpClient
             .newCall(
@@ -137,7 +137,7 @@ fun getPackageFiles(httpClient: OkHttpClient, jsonParser: Moshi, subject: String
 /**
  * [API Documentation](https://bintray.com/docs/api/#_download_content)
  */
-fun downloadFile(httpClient: OkHttpClient, subject: String, repo: BintrayRepo, file: BintrayFile, destinationFile: File, bufferSizeBytes: Int, apiEndpoint: HttpUrl = HttpUrl.get("https://dl.bintray.com/")): Completable = Completable
+fun downloadFile(httpClient: OkHttpClient, downloadsEndpoint: HttpUrl, subject: String, repo: BintrayRepo, file: BintrayFile, destinationFile: File, bufferSizeBytes: Int): Completable = Completable
     .fromAction {
         httpClient
             .newCall(
@@ -145,7 +145,7 @@ fun downloadFile(httpClient: OkHttpClient, subject: String, repo: BintrayRepo, f
                     .Builder()
                     .get()
                     .url(
-                        apiEndpoint
+                        downloadsEndpoint
                             .newBuilder()
                             .addPathSegments("$subject/${repo.name}/${file.path}")
                             .build()

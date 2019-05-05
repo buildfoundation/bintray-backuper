@@ -1,13 +1,11 @@
 package io.buildfoundation.bintraybackuper
 
 import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.ShowHelpException
 import com.xenomachina.argparser.SystemExitException
 import com.xenomachina.argparser.default
 import okhttp3.Credentials
+import okhttp3.HttpUrl
 import java.io.File
-import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 import java.time.Duration
 
 data class Args(
@@ -22,7 +20,9 @@ data class Args(
     val checksumBufferBytes: Int,
     val downloadDir: File,
     val downloadRetries: Long,
-    val basicAuthCredentials: String?
+    val basicAuthCredentials: String?,
+    val apiEndpoint: HttpUrl,
+    val downloadsEndpoint: HttpUrl
 )
 
 private class IntermediateArgs(parser: ArgParser) {
@@ -73,7 +73,29 @@ private class IntermediateArgs(parser: ArgParser) {
         .default("")
         .addValidator {
             if (value != "" && value.split(":").size != 2) {
-                throw IllegalArgumentException("Credentials must be in 'user:apikey' format.")
+                throw SystemExitException("Credentials must be in 'user:apikey' format.", returnCode = 1)
+            }
+        }
+
+    val apiEndpoint by parser
+        .storing("--api-endpoint", help = "Bintray-compatible API endpoint to use")
+        .default("https://api.bintray.com/")
+        .addValidator {
+            try {
+                HttpUrl.get(value)
+            } catch (e: Exception) {
+                throw SystemExitException("Invalid api endpoint url, error = '$e', value = '$value'", returnCode = 1)
+            }
+        }
+
+    val downloadsEndpoint by parser
+        .storing("--downloads-endpoint", help = "Bintray-compatible downloads endpoint to use")
+        .default("https://dl.bintray.com/")
+        .addValidator {
+            try {
+                HttpUrl.get(value)
+            } catch (e: Exception) {
+                throw SystemExitException("Invalid api endpoint url, error = '$e', value = '$value'", returnCode = 1)
             }
         }
 }
@@ -83,6 +105,7 @@ fun parseArgs(rawArgs: Array<String>): Args {
 
     try {
         val intermediateArgs = IntermediateArgs(parser)
+        parser.force()
 
         return Args(
             subject = intermediateArgs.subject,
@@ -107,7 +130,9 @@ fun parseArgs(rawArgs: Array<String>): Args {
 
                     Credentials.basic(user, apiKey)
                 }
-            }
+            },
+            apiEndpoint = intermediateArgs.apiEndpoint.let { HttpUrl.get(it) },
+            downloadsEndpoint = intermediateArgs.downloadsEndpoint.let { HttpUrl.get(it) }
         )
     } catch (e: SystemExitException) {
         e.printAndExit()
