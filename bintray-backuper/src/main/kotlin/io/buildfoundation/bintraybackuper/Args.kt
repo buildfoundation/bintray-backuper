@@ -54,7 +54,7 @@ private class IntermediateArgs(parser: ArgParser) {
         .default("6")
 
     val checksumThreads by parser
-        .storing("--checksum-thread", help = "Number of threads for checksum verification, default is number of cores * 6 (disk bound)")
+        .storing("--checksum-threads", help = "Number of threads for checksum verification, default is number of cores * 6 (disk bound)")
         .default("${Runtime.getRuntime().availableProcessors() * 6}")
 
     val checksumBufferBytes by parser
