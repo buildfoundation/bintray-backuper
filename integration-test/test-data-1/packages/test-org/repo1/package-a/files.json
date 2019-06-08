@@ -1,0 +1,5 @@
+{
+  "code": 200,
+  "headers": [],
+  "body": "[ { \"path\": \"file-a.txt\", \"sha1\": \"1f4d92d744cc13ae05b02ee201a6f6ce45f0923f\" } ]"
+}

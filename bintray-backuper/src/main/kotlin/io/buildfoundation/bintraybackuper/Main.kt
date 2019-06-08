@@ -106,7 +106,7 @@ fun main(rawArgs: Array<String>) {
         }
         .blockingGet()
 
-    println("Done, ${results.filesCount} files, ${byteCountToDisplaySize(results.totalBytes)}, took ${took(startTimeNanos)}.")
+    println("Done: ${results.filesCount} files, ${byteCountToDisplaySize(results.totalBytes)}, took ${took(startTimeNanos)}")
     System.exit(0)
 }
 
@@ -172,6 +172,15 @@ private data class Results(
     val totalBytes: Long
 )
 
-private fun took(startTimeNanos: Long): String = "${Duration.ofNanos(System.nanoTime() - startTimeNanos)}"
+private fun took(startTimeNanos: Long): String {
+    val duration = Duration.ofNanos(System.nanoTime() - startTimeNanos)
+
+    val hours = duration.toHours()
+    val minutes = duration.minusHours(hours).toMinutes()
+    val seconds = duration.minusHours(hours).minusMinutes(minutes).seconds
+    val millis = duration.minusHours(hours).minusMinutes(minutes).minusSeconds(seconds).toMillis()
+
+    return "$hours:$minutes:$seconds.$millis (hours:minutes:seconds.millis)"
+}
 
 

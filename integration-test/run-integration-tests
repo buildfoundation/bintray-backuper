@@ -3,8 +3,12 @@ set -euo pipefail
 
 readonly project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
+mock_server_pid="-1"
+
+trap 'kill ${mock_server_pid}' EXIT
+
 function build() {
-    "$project_dir/gradlew" build
+    "$project_dir/gradlew" --project-dir "$project_dir" build
 }
 
 # $1 — port
@@ -15,6 +19,7 @@ function run_mock_bintray_server() {
         --port "$1" \
         --data-dir "$2" \
         &
+    mock_server_pid="$!"
 }
 
 function run_bintray_backuper() {
@@ -27,6 +32,7 @@ function run_bintray_backuper() {
 }
 
 function main() {
+    build
     run_mock_bintray_server "8080" "$project_dir/integration-test/test-data-1"
     run_bintray_backuper
 }
