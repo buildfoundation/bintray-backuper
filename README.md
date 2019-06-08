@@ -49,7 +49,7 @@ java -jar bintray-backuper.jar --subject myorg --download-dir backup-dir
     - Bintray API credentials in form of `user:apikey` string
     - To obtain API key [go to "Edit Your Profile" on Bintray](https://bintray.com/profile/edit) → "API Key"
     - Default: "" (no value, requests are made anonymously and are subject to Bintray anti-DDoS and other checks)
-    - Example: `BINTRAY_BACKUPER_API_CREDENTIALS="myuser:myapikey" java -jar bintray-backuper.jar --subject myorg`
+    - Example: `BINTRAY_BACKUPER_API_CREDENTIALS="myuser:myapikey" java -jar bintray-backuper.jar`
 
 ### Optional Arguments
 
