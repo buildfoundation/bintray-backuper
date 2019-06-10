@@ -11,11 +11,12 @@ A tool to backup any type of public/private repositories from Bintray.
 
 ## Reasons to Back up Repositories from Bintray
 
-- Migration to another artifact hosting service
-- Protection from [Bintray downtimes](https://status.bintray.com)
-- Prevention of data loss in case Bintray loses it
+>Backups, aka "better safe than sorry"!
 
-Backups, aka "better safe than sorry"!
+- To actually own your data
+- To protect from [Bintray downtimes](https://status.bintray.com)
+- To prevent data loss in case Bintray loses it
+- To prepare for migration to another artifact hosting service
 
 ## Key Features
 
