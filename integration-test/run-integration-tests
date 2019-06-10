@@ -24,7 +24,7 @@ function run_mock_bintray_server() {
 
 function run_bintray_backuper() {
     java \
-        -jar "$project_dir/bintray-backuper/build/libs/bintray-backuper-all.jar" \
+        -jar "$project_dir/bintray-backuper/build/libs/bintray-backuper.jar" \
         --api-endpoint "http://127.0.0.1:8080" \
         --downloads-endpoint "http://127.0.0.1:8080" \
         --subject "test-org" \
