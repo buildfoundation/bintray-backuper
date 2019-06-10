@@ -42,7 +42,6 @@ java -jar bintray-backuper.jar --subject myorg --download-dir backup-dir
     - Directory to download files to. Files will be stored in following layout: 'download-dir/subject/repo/path-to-file'. Directory layout will be created if it doesn't exist. Checksum of existing files will be verified against metadata downloaded from Bintray.
     - Example: `--download-dir backup-dir`
 
-
 ### Optional Environment Variables
 
 - `BINTRAY_BACKUPER_API_CREDENTIALS`
@@ -100,5 +99,13 @@ java -jar bintray-backuper.jar --subject myorg --download-dir backup-dir
 
 ## Releases
 
-TODO
+Binaries of `bintray-backuper` are published to [GitHub Releases](https://github.com/buildfoundation/bintray-backuper/releases) as part of Continuous Integration (triggered by git tags).
 
+Each release contains:
+
+- `bintray-backuper.jar`: executable jar
+- `bintray-backuper.jar.sha256`: sha256 of the jar
+- `bintray-backuper.jar.sha512`: sha512 of the jar
+- `dependencies.txt` dependencies used to build the jar
+- `dependencies.txt.sha256`: sha256 of dependencies.txt
+- `dependencies.txt.sha512`: sha512 of dependencies.txt

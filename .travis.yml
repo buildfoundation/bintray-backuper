@@ -9,6 +9,32 @@ install:
 
 script:
   - integration-test/run-integration-tests
+  - ./gradlew :bintray-backuper:dependencies --console plain --quiet > bintray-backuper/build/dependencies.txt
+  - shasum --algorithm 256 bintray-backuper/build/dependencies.txt > bintray-backuper/build/dependencies.txt.sha256
+  - shasum --algorithm 512 bintray-backuper/build/dependencies.txt > bintray-backuper/build/dependencies.txt.sha512
+  - echo "Dependencies of bintray-backuper.jar:" && cat bintray-backuper/build/dependencies.txt
+  - shasum --algorithm 256 bintray-backuper/build/libs/bintray-backuper.jar > bintray-backuper/build/libs/bintray-backuper.jar.sha256
+  - shasum --algorithm 512 bintray-backuper/build/libs/bintray-backuper.jar > bintray-backuper/build/libs/bintray-backuper.jar.sha512
+  - echo "sha256 of dependencies.txt" && cat bintray-backuper/build/dependencies.txt.sha256
+  - echo "sha512 of dependencies.txt" && cat bintray-backuper/build/dependencies.txt.sha512
+  - echo "sha256 of bintray-backuper.jar" && cat bintray-backuper/build/libs/bintray-backuper.jar.sha256
+  - echo "sha512 of bintray-backuper.jar" && cat bintray-backuper/build/libs/bintray-backuper.jar.sha512
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: cjL9ANwn3t9odDHJXupB/h5fQV6q3YGidc1W2J8obqBieibxbIfMJEPpuCurclHxS5DLaqIr9fYGC/Y5r3vaFHI+7DJta2MdEBJUJEivXrwV+OsHFdeH9uM/KBSX6wOgb9LsQh55ci0M3IsmA9mCiPVT3kCHuvKw5RKoa7SOdgXdUIfV8stJlvVCGEdBcU4CwLiSOsnmQXOyM3Y6ZztF1lVjNOPmvDy2fH0d1rL9mVKpuC8aHMcWJqpRRpeW0IsNvOGR80nDQ5Xj56Jh/cXJbH83kmTjKG0+XTfn8itnYvmi3Bih1Ym4hm5FGhnY7urlJzypDle6ihxZuWW9mUxm6ScJRhaoTxyw7I97w8w+US5DMTo1YX5YxW37Sp/MwIcTCfhKukRrIkTOwy7glKEkYUajCEL5iMmw7BJA4Qhlve4x4D/I6YNftA7z1bJVgNVLf9xMHhXsnVifXioqi9WlKXcVg1N+qnhw7omo0v/kYkDjhVhh/w/dqLBqYH6HieR+KlY3/8/80kMYrZ/wNHIkDObkl8XucXmj76ftB8rR6GfZCcQ3uDeu+m9ttKQhb/yM28RnAtYca6MoGGOTd6s6utyFWa2fs+A8V/f4t5ika5+cS1WABjFTtmG0IDJwuNM+N3xrOYAj/tesdPAlo4u/NcQMR+gc2IoGLUkmiivxICo=
+  file:
+    - bintray-backuper/build/dependencies.txt
+    - bintray-backuper/build/dependencies.txt.sha256
+    - bintray-backuper/build/dependencies.txt.sha512
+    - bintray-backuper/build/libs/bintray-backuper.jar
+    - bintray-backuper/build/libs/bintray-backuper.jar.sha256
+    - bintray-backuper/build/libs/bintray-backuper.jar.sha512
+  on:
+    repo: buildfoundation/bintray-backuper
+    tags: true
 
 before_cache:
   - rm -f "$HOME"/.gradle/caches/modules-2/modules-2.lock
