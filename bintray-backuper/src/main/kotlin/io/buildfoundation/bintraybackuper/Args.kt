@@ -100,7 +100,7 @@ fun parseArgs(rawArgs: Array<String>): Args {
 
         return Args(
             subject = intermediateArgs.subject,
-            basicAuthCredentials = System.getenv("BINTRAY_BACKUPER_API_CREDENTIALS") ?: "".let {
+            basicAuthCredentials = (System.getenv("BINTRAY_BACKUPER_API_CREDENTIALS") ?: "").let {
                 if (it == "") {
                     null
                 } else {
